@@ -1,8 +1,8 @@
-## Jenkins automation
+# Jenkins automation
 
 This is the definition for a Jenkins container.
 
-# Usage
+## Usage
 Build the image using:
 
 ````sh
