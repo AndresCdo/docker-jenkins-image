@@ -1,6 +1,9 @@
 ## Jenkins automation
 
-This is the definition for a Jenkins container. Build the image using:
+This is the definition for a Jenkins container.
+
+# Usage
+Build the image using:
 
 ````sh
 docker build -t jenkins-image:1.0 .
