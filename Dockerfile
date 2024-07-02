@@ -29,34 +29,24 @@ FROM builder as runner
 # Set the working directory
 WORKDIR /var/jenkins_home
 
-
 # Print out the version of Jenkins
 RUN echo "Jenkins version: $(/usr/bin/jenkins --version)"
-
-# Add the Jenkins user to the root group
-RUN usermod -aG root jenkins
 
 # Install Ansible
 RUN apt-get update && \
     apt-get install -y sudo wget jq python3 python3-pip && \
-    pip3 install ansible && \
-    apt-get remove -y python3-pip && \
-    apt-get autoremove -y && \
+    pip3 install ansible 
+
+# # Clone aprovisioning repository
+# RUN git clone https://github.com/AndresCdo/ansible-practice/
+# RUN rm -rf /var/jenkins_home/ansible-practice/.git 
+# RUN sed -i 's/#connection\:/connection\:/' /var/jenkins_home/ansible-practice/playbook.yml
+# RUN echo "localhost" > /var/jenkins_home/ansible-practice/hosts
+# RUN ansible-playbook /var/jenkins_home/ansible-practice/playbook.yml -i /var/jenkins_home/ansible-practice/hosts -v 
+
+# Clear the cache
+RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-COPY credentials.env /var/jenkins_home/
-COPY ./*.sh /var/jenkins_home/
-COPY plugins.txt /var/jenkins_home/
-
-# Clone aprovisioning repository
-RUN git clone https://github.com/AndresCdo/ansible-practice/
-RUN rm -rf /var/jenkins_home/ansible-practice/.git 
-RUN sed -i 's/#connection\:/connection\:/' /var/jenkins_home/ansible-practice/playbook.yml
-RUN echo "localhost" > /var/jenkins_home/ansible-practice/hosts
-RUN ansible-playbook /var/jenkins_home/ansible-practice/playbook.yml -i /var/jenkins_home/ansible-practice/hosts -v 
-
-# Set the user to use when running this image
-USER jenkins
 
 # Set the volume mount point for Jenkins
 VOLUME /var/jenkins_home
@@ -64,10 +54,29 @@ VOLUME /var/jenkins_home
 # Expose port 7364
 EXPOSE 8080
 
-# Set the umask to 077 for security reasons
-# RUN umask 077
+COPY .env /var/jenkins_home/
+COPY setup_jenkins_plugins.sh /var/jenkins_home/
+COPY plugins.txt /var/jenkins_home/
 
-# Set the default command to execute
-# Start Jenkins using Tini as the entrypoint
-ENTRYPOINT ["/usr/bin/tini", "--", "/usr/bin/jenkins"]
-CMD ["--httpPort=8080"]
+# Copy the entrypoint script into the container
+COPY entrypoint.sh /var/jenkins_home/
+
+# Add executable permissions to the entrypoint.sh script
+RUN chmod +x /var/jenkins_home/entrypoint.sh
+
+# Set the permissions for the entrypoint.sh script
+RUN chown jenkins:root /var/jenkins_home/entrypoint.sh
+
+# Add the Jenkins user to the root group
+RUN usermod -aG root jenkins
+
+# Set the permissions for the Jenkins home directory
+RUN chown -R jenkins:root /var/jenkins_home
+
+# Set the permissions for the Jenkins home directory
+RUN chmod -R 775 /var/jenkins_home
+
+# Set the user to the Jenkins user
+USER jenkins
+
+ENTRYPOINT ["/var/jenkins_home/entrypoint.sh"]
