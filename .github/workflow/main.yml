@@ -6,8 +6,12 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-
-env:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+  env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
