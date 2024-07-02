@@ -1,91 +1,26 @@
-// AWS plugins
-ec2-plugin
-s3-plugin
+ansible
 aws-credentials
-aws-java-sdk
-aws-lambda
-aws-lambda-deployment-plugin
-aws-lambda-deployment
-
-// Google Cloud plugins
-google-oauth-plugin
-google-source-plugin
-google-compute-engine
-google-kubernetes-engine
-google-container-registry-auth
-google-deployment-manager
-
-// GitHub plugins
-github
-github-branch-source
-github-oauth
-github-pullrequest
-// github-organization-folder (Deprecated)
-
-// Jenkins plugins
 blueocean
 build-timeout
 credentials-binding
+dark-theme
+docker-build-step
+docker-commons
+docker-plugin
+docker-workflow
 git
-job-dsl
+github
+github-branch-source
+github-oauth
 junit
+kubernetes
+kubernetes-cli
+kubernetes-credentials
+kubernetes-credentials-provider
 matrix-auth
+nodejs
 pipeline-utility-steps
 ssh-slaves
 timestamper
 workflow-aggregator
 ws-cleanup
-
-// Docker plugins
-ansicolordocker-plugin
-docker-commons
-docker-build-step
-docker-build-publish
-docker-hub-notification
-docker-plugin
-docker-workflow
-
-// Terraform plugins
-terraform
-terraform-validator
-terraform-linter
-terraform-compliance
-terraform-provider-checkov
-terraform-provider-tfsec
-terraform-provider-tflint
-terraform-provider-tfmask
-
-// Ansible plugins
-ansible
-ansible-lint
-ansible-tower
-ansible-tower-credentials
-ansible-tower-configuration
-ansible-tower-job
-ansible-tower-notifications
-ansible-tower-workflow
-
-// Kubernetes plugins
-kubernetes
-kubernetes-cli
-kubernetes-credentials
-kubernetes-continuous-deployment
-kubernetes-credentials-provider
-kubernetes-deploy
-kubernetes-pipeline
-kubernetes-pod-template
-kubernetes-service-account
-kubernetes-ssh-agent
-
-// Node.js plugins
-nodejs
-nodejs-plugin
-nodejs-installation
-nodejs-config
-nodejs-wrapper
-nodejs-build-wrapper
-nodejs-envs
-nodejs-envs-wrapper
-nodejs-envs-config
-
-// Pipeline: Deprecated Groovy Libraries (Deprecated)

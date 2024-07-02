@@ -35,14 +35,14 @@ make_post_request() {
   local data=$5
   local url_post=$6
 
-  curl -X POST -u "$username:$password" $url/$url_post \
+  curl -s -X POST -u "$username:$password" $url/$url_post \
     -H "Connection: keep-alive" \
     -H "Accept: application/json, text/javascript" \
     -H "X-Requested-With: XMLHttpRequest" \
     -H "$crumb" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     --cookie $cookie_jar \
-    --data-raw "$data"
+    --data-raw "$data" 
 }
 
 # Check if environment variables are set
@@ -82,26 +82,28 @@ if [ $? -eq 0 ]; then
 
   export JENKINS_API_TOKEN=$(echo $result | jq -r '.data.tokenValue')
 
-  wget http://localhost:8080/jnlpJars/jenkins-cli.jar -O /tmp/jenkins-cli.jar > /dev/null
+  wget http://localhost:8080/jnlpJars/jenkins-cli.jar -O jenkins-cli.jar -q --show-progress --progress=bar:force:noscroll
   PLUGIN_LIST_FILE=/var/jenkins_home/plugins.txt
 
   # Install plugins with the Jenkins CLI
   for plugin in $(cat $PLUGIN_LIST_FILE)
   do
     echo "Installing $plugin"
-    java -jar /tmp/jenkins-cli.jar -s http://localhost:8080 install-plugin $plugin
+    java -jar jenkins-cli.jar -s http://localhost:8080 install-plugin $plugin
     check_status
   done
 
   echo "Restarting Jenkins"
-  java -jar /tmp/jenkins-cli.jar -s http://localhost:8080 safe-restart
+  java -jar jenkins-cli.jar -s http://localhost:8080 safe-restart
   
 else
   echo "Token creation failed"
   exit 1
 fi
 
-# Set theme to dark
-only_crumb=$(get_crumb_and_cookie "$username" "$new_password" "$cookie_jar")
-result=$(make_post_request "$username" "$new_password" "$cookie_jar" "$only_crumb" "jenkins-theme-dark=on&Jenkins-Crumb=$only_crumb&json=%7B%22jenkins-theme-dark%22%3A%22on%22%2C%22Jenkins-Crumb%22%3A%22$only_crumb%22%7D&core%3Aapply=&Submit=Save&json=%7B%22jenkins-theme-dark%22%3A%22on%22%2C%22Jenkins-Crumb%22%3A%22$only_crumb%22%7D")
+# Clean up
+rm -f $cookie_jar
+rm -f jenkins-cli.jar
+
+echo "Jenkins setup complete"
 
