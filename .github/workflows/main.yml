@@ -11,9 +11,6 @@ on:
         description: 'Deployment environment'
         required: true
         default: 'production'
-  env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push:
@@ -21,6 +18,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
 
     steps:
     - name: Checkout repository
